@@ -1,7 +1,7 @@
 #!/bin/bash
 trap "exit" INT
 
-LOG_PATH="${HOME}/Documents/Pomodoro/"
+LOG_PATH="./days"
 
 log(){
     CURR_DATE=`date +%Y-%m-%d`
@@ -13,12 +13,12 @@ log(){
 finish(){
   if [ "$(uname)" == "Darwin" ]; then
     say -v Kate "${1}"
-    terminal-notifier -message 'Pomodoro'\
+    terminal-notifier -message 'shPAGETTI'\
     -title "${1}"\
     -sound Crystal
   elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     say "${1}"
-    notify-send "Pomodoro" "${1}"
+    notify-send "shPAGETTI" "${1}"
   #elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
       # Do something under 32 bits Windows NT platform
   #elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
@@ -50,6 +50,12 @@ fi
 
 START_MESSAGE="Timer(${TIME}m) started"
 END_MESSAGE="Timer(${TIME}m) ended"
+
+if [[ ! -e "${LOG_PATH}" ]]; then
+    mkdir -p "${LOG_PATH}"
+elif [[ ! -d "${LOG_PATH}" ]]; then
+    echo "${LOG_PATH} already exists but is not a directory" 1>&2
+fi
 
 if [ -z "$MESSAGE" ]
 then

@@ -6,7 +6,35 @@ You can also simply make a
 
 When you finish early with the task you can write down what was the reason of premature finish.
 
-## Dependencies
+## How it works
+Example of use:
+``` bash
+$ shpagetti -t 30 -m "Coding new javascript framework"
+```
+
+What parameters can be set:
+```
+-t|--time
+    Time in minutes. In case time is not set system will ask you in next step.
+-m|--message
+    Description of what you plan to do.
+-l|--log
+    Overwrite default log path.
+```
+
+Format of the log
+```
+# _{{ CURR_DATE } {{ CURR_TIME }}_   **{{ USER_MESSAGE }}**    {{ STATUS_MESSAGE }}
+_2023-02-01 10:00_    **Coding new javascript framework**    Timer(30m) started
+```
+
+
+## How to install
+Change permissions to allow run directly
+```bash
+$ chmod +x shpagetti
+```
+or create alias in `/usr/local/bin`
 
 ### Mac OS
 ```bash
