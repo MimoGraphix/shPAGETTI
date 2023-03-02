@@ -2,12 +2,22 @@
 trap "exit" INT
 
 LOG_PATH="./days"
+PAST=0
 
 log(){
     CURR_DATE=`date +%Y-%m-%d`
     CURR_TIME=`date +%H:%M`
 
     echo -e "_${CURR_DATE} ${CURR_TIME}_\t${1}" >> "${LOG_PATH}${CURR_DATE}.log.md"
+}
+
+log_past(){
+    timestamp=`(date +%s)`
+    timestamp=`echo $((($timestamp)-(${1}*60)))`
+    CURR_DATE=`date -r ${timestamp} +%Y-%m-%d`
+    CURR_TIME=`date -r ${timestamp} +%H:%M`
+
+    echo -e "_${CURR_DATE} ${CURR_TIME}_\t${2}" >> "${LOG_PATH}${CURR_DATE}.log.md"
 }
 
 finish(){
@@ -37,6 +47,9 @@ while :; do
         -l|--log) LOG_PATH="$2/"
         shift
         ;;
+        -p|--past) PAST=1
+        shift
+        ;;
         *) break
     esac
     shift
@@ -57,14 +70,35 @@ elif [[ ! -d "${LOG_PATH}" ]]; then
     echo "${LOG_PATH} already exists but is not a directory" 1>&2
 fi
 
-if [ -z "$MESSAGE" ]
+if [ $PAST -eq 1 ]
 then
-    log "${START_MESSAGE}"
-else
-    log "**${MESSAGE}**\t${START_MESSAGE}"
+  if [ -z "$MESSAGE" ]
+  then
+      log "${START_MESSAGE}"
+  else
+      log "**${MESSAGE}**\t${START_MESSAGE}"
+  fi
 fi
 
-timer ${TIME}m && FINISHED="finished"
+if [ $PAST -eq 0 ]
+then
+  if [ -z "$MESSAGE" ]
+  then
+      log "${START_MESSAGE}"
+  else
+      log "**${MESSAGE}**\t${START_MESSAGE}"
+  fi
+
+  timer ${TIME}m && FINISHED="finished"
+else
+  FINISHED="finished"
+  if [ -z "$MESSAGE" ]
+  then
+      log_past ${TIME} "${START_MESSAGE}"
+  else
+      log_past ${TIME} "**${MESSAGE}**\t${START_MESSAGE}"
+  fi
+fi
 
 if [ ! -z "$FINISHED" ]
 then
